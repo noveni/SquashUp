@@ -45,6 +45,10 @@ if [ $# -gt 0 ]; then
             echo "stopping stack"
             $DOCKERCOMPOSE down
         ;;
+        stopv)
+            echo "stopping stack"
+            $DOCKERCOMPOSE down -v
+        ;;
         composer)
             shift 1
             echo "composer $@"
