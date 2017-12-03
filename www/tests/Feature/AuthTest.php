@@ -55,6 +55,7 @@ class ExampleTest extends TestCase
         $response->assertRedirect('/home');
     }
 
+    /** @test */
     public function a_logged_user_can_see_home()
     {
         $user = factory(User::class)->create();
