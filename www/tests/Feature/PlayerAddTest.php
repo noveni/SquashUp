@@ -7,18 +7,27 @@ use App\Role;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class PlayersTest extends TestCase
+class PlayerAddTest extends TestCase
 {
     use RefreshDatabase;
+    private $superadmin;
+
+    private function addASuperAdmin(){
+        // $superadmin = $this->addASuperAdmin();
+        $this->seed('RoleTableSeeder');
+        $this->superadmin = factory(User::class)->create();
+        $this->superadmin->roles()->attach(Role::where('name', 'superadmin')->first());
+    }
 
     /** @test */
     public function a_superadmin_can_view_the_add_player_page()
     {
-        $this->seed('RoleTableSeeder');
-        $superadmin = factory(User::class)->create();
-        $superadmin->roles()->attach(Role::where('name', 'superadmin')->first());
+        // $this->seed('RoleTableSeeder');
+        // $superadmin = factory(User::class)->create();
+        // $superadmin->roles()->attach(Role::where('name', 'superadmin')->first());
 
-        $response = $this->actingAs($superadmin)
+        $this->addASuperAdmin();
+        $response = $this->actingAs($this->superadmin)
                         ->get(route('player.create'));
 
         $response->assertViewIs('player.create')
@@ -53,5 +62,14 @@ class PlayersTest extends TestCase
                 ->assertRedirect(route('player.index'));
     }
 
+
+    /** @test */
+    public function a_superadmin_can_add_a_player()
+    {
+        $this->seed('RoleTableSeeder');
+        $superadmin = factory(User::class)->create();
+        $superadmin->roles()->attach(Role::where('name', 'superadmin')->first());
+
+    }
 
 }
