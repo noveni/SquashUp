@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,23 @@ class PlayerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if(!Auth::user()->hasRole('superadmin'))
+            return redirect()->route('player.index');
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+        ]);
+
+        $player = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => bcrypt('password')
+        ]);
+        $player->roles()
+            ->attach(Role::where('name', 'player')->first());
+
+        return redirect()->route('player.index')->with('status', 'Player added');
     }
 
     /**

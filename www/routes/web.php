@@ -35,5 +35,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/player', 'PlayerController@index')->name('player.index');
     Route::get('/player/add', 'PlayerController@create')->name('player.create');
-    Route::post('/player/add', 'PlayerController@store')->name('player.store');
+    Route::post('/player', 'PlayerController@store')->name('player.store');
 });

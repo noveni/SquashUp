@@ -66,10 +66,22 @@ class PlayerAddTest extends TestCase
     /** @test */
     public function a_superadmin_can_add_a_player()
     {
-        $this->seed('RoleTableSeeder');
-        $superadmin = factory(User::class)->create();
-        $superadmin->roles()->attach(Role::where('name', 'superadmin')->first());
+        $this->addASuperAdmin();
+        $player = factory(User::class)->make();
 
+        $response = $this->actingAs($this->superadmin)
+                        ->post(route('player.store'), [
+                            'name' => $player->name,
+                            'email' => $player->email,
+                        ]);
+
+        $response->assertRedirect(route('player.index'))
+                ->assertSessionHas('status', 'Player added');
+
+        $this->assertDatabaseHas('users', [
+            'name' => $player->name,
+            'email' => $player->email,
+        ]);
     }
 
 }
